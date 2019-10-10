@@ -22,7 +22,9 @@ entity core is
 		addr_dcache : out std_logic_vector(n-1 downto 0);		-- data address
 		addr_icache : out std_logic_vector(n-1 downto 2);		-- instr. address
 		data_icache : in std_logic_vector(n-1 downto 0);		-- instr. input
-		data_dcache : inout std_logic_vector(n-1 downto 0)		-- data input/output
+		data_dcache_i : in std_logic_vector(n-1 downto 0)		-- data input
+		data_dcache_o : out std_logic_vector(n-1 downto 0)		-- data output
+
 	);
 end entity core;
 
@@ -259,7 +261,8 @@ begin
 		Forward_S 	    => Forward_S ,
 		fw_data_WB 	    => fw_data_WB ,
 		--------------------------
-		data_bus		=> data_dcache ,
+		data_bus_i		=> data_dcache_i ,
+		data_bus_o		=> data_dcache_o,
 		sb_en 		    => sb_en ,
 		sh_en 		    => sh_en ,
 		mem_pc_src		=> mem_pc_src,

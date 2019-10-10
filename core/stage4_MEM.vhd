@@ -15,7 +15,8 @@ entity stage4_MEM is
 		Forward_S		: in std_logic;
 		fw_data_WB		: in std_logic_vector(n-1 downto 0);
 		-- stage pipeline register, EX/MEM and MEM/WB
-		data_bus 		: inout std_logic_vector(n-1 downto 0);
+		data_bus_i 		: in std_logic_vector(n-1 downto 0);
+		data_bus_o 		: out std_logic_vector(n-1 downto 0);
 		sb_en			: out std_logic;
 		sh_en			: out std_logic;
 		mem_pc_src		: out std_logic;
@@ -75,8 +76,7 @@ begin
 				exmem.data_rs2;	-- when (Forward_S = '0');
 
 	-- internal data bus
-	data_bus<=	MS_out when (exmem.mem_w = '1' AND flush_excp = '0') else
-				(others => 'Z');
+	data_bus_o <=	MS_out;
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
@@ -106,17 +106,17 @@ begin
 --------------		Byte signed or Byte unsigned.
 
 	L_ext <=	'0'			 when (exmem.funct3(2) = '1') else
-				data_bus(15) when (exmem.funct3(0) = '1') else
-				data_bus(7)  when (exmem.funct3(0) = '0') else
+				data_bus_i(15) when (exmem.funct3(0) = '1') else
+				data_bus_i(7)  when (exmem.funct3(0) = '0') else
 				'0';
 
-	L_upper <=  data_bus(31 downto 16) when (exmem.funct3(1) = '1') else
+	L_upper <=  data_bus_i(31 downto 16) when (exmem.funct3(1) = '1') else
 			   (others => L_ext);
 
-	L_lower(15 downto 8) <= data_bus(15 downto 8) when (exmem.funct3(1) = '1' OR exmem.funct3(0) = '1') else
+	L_lower(15 downto 8) <= data_bus_i(15 downto 8) when (exmem.funct3(1) = '1' OR exmem.funct3(0) = '1') else
 							(others => L_ext);   --  when (exmem.funct3(0) = '0');
 
-	L_lower(7 downto 0)  <= data_bus(7 downto 0);
+	L_lower(7 downto 0)  <= data_bus_i(7 downto 0);
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
