@@ -237,7 +237,8 @@ package core_pkg is
 			Forward_S		: in std_logic;
 			fw_data_WB		: in std_logic_vector(n-1 downto 0);
 			-- stage pipeline register, EX/MEM and MEM/WB
-			data_bus 		: inout std_logic_vector(n-1 downto 0);
+			data_bus_i 		: in std_logic_vector(n-1 downto 0);
+			data_bus_o 		: out std_logic_vector(n-1 downto 0);
 			sb_en			: out std_logic;
 			sh_en			: out std_logic;
 			mem_pc_src		: out std_logic;

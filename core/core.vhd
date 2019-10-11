@@ -22,7 +22,7 @@ entity core is
 		addr_dcache : out std_logic_vector(n-1 downto 0);		-- data address
 		addr_icache : out std_logic_vector(n-1 downto 2);		-- instr. address
 		data_icache : in std_logic_vector(n-1 downto 0);		-- instr. input
-		data_dcache_i : in std_logic_vector(n-1 downto 0)		-- data input
+		data_dcache_i : in std_logic_vector(n-1 downto 0);		-- data input
 		data_dcache_o : out std_logic_vector(n-1 downto 0)		-- data output
 
 	);
@@ -119,12 +119,12 @@ begin
 --------------------------
 	-- flush 		<= from stage1_IF
 	-- stall_id_if	<= from stage2_ID
-	process(clk , rst_core , flush_branch , flush_excp)
-	begin
-		if (rising_edge(clk) AND rst_core = '0' AND (flush_branch = '1' OR flush_excp = '1')) then
-			-- report "Pipeline Flush" severity warning;
-		end if;
-	end process;
+	--process(clk , rst_core , flush_branch , flush_excp)
+	--begin
+	--	if (rising_edge(clk) AND rst_core = '0' AND (flush_branch = '1' OR flush_excp = '1')) then
+	--		-- report "Pipeline Flush" severity warning;
+	--	end if;
+	--end process;
 
 	-----------------------
 	-- Exception/Interrupt Flush
