@@ -71,7 +71,7 @@ architecture behavior of cache is
 begin
 
 ---------------------------------------------
----- Cancel Instruction Request in case of a invalid address (wich only happens on pipeline flush inside the core)
+---- Cancel Instruction Request in case of a invalid address (which only happens on pipeline flush inside the core)
 	cancel_ir <=	'1' when (valid_iaddr = '0') else
 					'0';
 
