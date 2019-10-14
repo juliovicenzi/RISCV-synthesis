@@ -46,7 +46,8 @@ architecture behavior of csr_unit is
 
 	-----------------
 	-- m_status register
-	signal	m_status	:	std_logic_vector(1 downto 0)	:= "01";	-- the Machine level status reg only uses 2 bits, [4] and [0]
+	-- invalid init
+	signal	m_status	:	std_logic_vector(1 downto 0);--	:= "01";	-- the Machine level status reg only uses 2 bits, [4] and [0]
 		-- alias	MPP			:	std_logic	is	m_status(2);	-- not used
 	alias	MPIE		:	std_logic	is	m_status(1);
 	alias	MIE			:	std_logic	is	m_status(0);
@@ -56,7 +57,8 @@ architecture behavior of csr_unit is
 
 	-----------------
 	-- m_ie register
-	signal	m_ie		:	std_logic_vector(1 downto 0) := (others => '0');
+	-- invalid init
+	signal	m_ie		:	std_logic_vector(1 downto 0);-- := (others => '0');
 	alias	MEIE		:	std_logic	is	m_ie(1);
 	alias	MSIE		:	std_logic	is	m_ie(0);
 
@@ -65,7 +67,8 @@ architecture behavior of csr_unit is
 
 	-----------------
 	-- m_tvec register
-	signal	m_tvec		:	std_logic_vector(n-1 downto 0)	:= (others => '0');	-- trap handler base address
+	-- invalid init
+	signal	m_tvec		:	std_logic_vector(n-1 downto 0);--	:= (others => '0');	-- trap handler base address
 	alias	BASE		:	std_logic_vector(n-1 downto 2)	is	m_tvec(n-1 downto 2);
 	alias	MODE		:	std_logic_vector(1 downto 0)	is	m_tvec(1 downto 0);
 
@@ -75,12 +78,14 @@ architecture behavior of csr_unit is
 
 	-----------------
 	-- m_epc register
-	signal	m_epc		:	std_logic_vector(n-1 downto 2)	:= (others => '1');	-- excpetion program counter
+	-- invalid init
+	signal	m_epc		:	std_logic_vector(n-1 downto 2);--	:= (others => '1');	-- excpetion program counter
 	signal	m_epc_out	:	std_logic_vector(n-1 downto 0);
 
 	-----------------
 	-- m_cause register
-	signal	m_cause		:	std_logic_vector(4 downto 0)	:= (others => '0');	-- exception/interrupt cause
+	-- invalid init
+	signal	m_cause		:	std_logic_vector(4 downto 0);--	:= (others => '0');	-- exception/interrupt cause
 	alias	CAUSE_INTR	:	std_logic						is	m_cause(4);
 	alias	CAUSE		:	std_logic_vector(3 downto 0)	is	m_cause(3 downto 0);
 

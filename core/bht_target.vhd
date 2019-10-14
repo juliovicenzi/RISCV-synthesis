@@ -23,7 +23,7 @@ architecture behavior of bht_target is
 	-----------------------------
 	-- Array with: target
 	type bht_target_type is ARRAY ((2**n_addr)-1 DOWNTO 0) of std_logic_vector(n_data-1 downto 0);
-	signal bht_target : bht_target_type := (others => (others => '0'));
+	signal bht_target : bht_target_type;
 
 begin
 

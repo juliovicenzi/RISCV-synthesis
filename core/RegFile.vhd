@@ -30,11 +30,13 @@ architecture behavior of RegFile is
 
 	-- type array, 32x4bytes, register file
 	type reg_array is ARRAY(1 to (2**n_reg)-1) of std_logic_vector(n-1 downto 0);
-	signal regs_file : reg_array := (others => (others => '0'));
+	signal regs_file : reg_array;
 
-	-- reset register, each bit say when a data in the register file (at the same index
-	-- as the bit position) is valid
-	signal rst_data : std_logic_vector((2**n_reg)-1 downto 0) := (others => '0');
+	-- Insted of setting registers to 0, we set the reset signal to 0, 
+	-- so that when the signal is read it outputs 0.
+	-- once a write operation occurs, the rst_data is set to 1 and the 
+	-- register contents are properly read
+	signal rst_data : std_logic_vector((2**n_reg)-1 downto 0);
 
 	signal rs1_i: integer range 0 to (2**n_reg)-1;
 	signal rs2_i: integer range 0 to (2**n_reg)-1;
@@ -78,7 +80,7 @@ begin
 
 			elsif (RegFile_W = '1' AND rd_i/=0) then	-- index 0 is ignored, since the register x0 is
 				rst_data(rd_i) <= '1';					-- a constant 0
-
+        
 			end if;
 		end if;
 	end process regfile_rst;

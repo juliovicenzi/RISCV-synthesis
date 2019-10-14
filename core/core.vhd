@@ -31,7 +31,8 @@ end entity core;
 architecture behavior of core is
 
 	-- Reset, Flush and Stall flags
-	signal	rst_core	:	std_logic := '0';
+	-- invalid init
+	signal	rst_core	:	std_logic; -- := '0';
 	signal	flush_branch:	std_logic;	-- flush from branch/jump
 	signal	stall_id_if	:	std_logic;	-- stall from load-stall
 	signal	bht_ready	:	std_logic;
@@ -129,8 +130,8 @@ begin
 	-----------------------
 	-- Exception/Interrupt Flush
 	-- generated only in the Stage4 (MEM)
-	jalr_excp	<=	'1'	when	(exmem.alu_result(1 downto 0) /= "00" AND exmem.branch_unc = '1' AND exmem.branch_src = '1') else
-					'0';
+	jalr_excp	<=	'1'	when	(exmem.alu_result(1 downto 0) /= "00" AND exmem.branch_unc = '1' AND exmem.branch_src = '1') else 
+	                '0';
 
 	-- exception caused by bad instr. address (created in a branch or jump)
 	iaddr_excp	<=	jalr_excp OR exmem.branch_excp;

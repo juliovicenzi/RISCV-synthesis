@@ -25,7 +25,7 @@ architecture behavior of bht_info is
 	-----------------------------
 	-- Array with: 2 bit state & tag
 	type bht_stag_type is ARRAY ((2**n_addr)-1 DOWNTO 0) of std_logic_vector(n_data-2 downto 0);
-	signal bht_stag : bht_stag_type := (others => (others => '0'));
+	signal bht_stag : bht_stag_type; -- := (others => (others => '0'));
 
 	-- output register
 	signal bht_stag_out : std_logic_vector(n_data-2 downto 0);
@@ -47,10 +47,10 @@ architecture behavior of bht_info is
 	-----------------------------
 	-- FSM to reset the bht valid bit
 	type state_fsm is (O_s , RST_s);
-	signal rst_fsm		:	state_fsm := O_s;
+	signal rst_fsm		:	state_fsm; -- := O_s;
 	signal rst_bht		:	std_logic;
-	signal rst_done		:	std_logic := '1';
-	signal rst_index	:	std_logic_vector(n_addr-1 downto 0) := (others => '0');
+	signal rst_done		:	std_logic;
+	signal rst_index	:	std_logic_vector(n_addr-1 downto 0); -- := (others => '0');
 	constant last_index	:	std_logic_vector(n_addr-1 downto 0) := (others => '1');
 
 begin
@@ -97,25 +97,31 @@ begin
 	process(clk)
 	begin
 		if (rising_edge(clk)) then
-			CASE rst_fsm is
-				---------------------
-				when O_s =>
-					if (rst = '1' AND rst_done = '0') then
-						rst_fsm	<= RST_s;
-					elsif (we = '1' AND rst_done = '1') then
-						rst_done <= '0';
-					end if;
-				---------------------
-				when RST_s =>
-					if (rst_index = last_index) then
-						rst_done	<= '1';
-						rst_index	<= (others => '0');
-						rst_fsm		<= O_s;
-					else
-						rst_index	<= std_logic_vector(unsigned(rst_index) + 1);
-					end if;
-				---------------------
-			end CASE;
+		    if rst = '1' then
+		        rst_fsm <= O_s;
+		        rst_done <= '0';
+		        rst_index <= (others => '0');
+		    else
+			    CASE rst_fsm is
+				    ---------------------
+				    when O_s =>
+					    if (rst_done = '0') then
+						    rst_fsm	<= RST_s;
+					    elsif (rst_done = '1') then
+						    rst_fsm	<= O_s;
+					    end if;
+				    ---------------------
+				    when RST_s =>
+					    if (rst_index = last_index) then
+						    rst_done	<= '1';
+						    rst_index	<= (others => '0');
+						    rst_fsm		<= O_s;
+					    else
+						    rst_index	<= std_logic_vector(unsigned(rst_index) + 1);
+					    end if;
+				    ---------------------
+			    end CASE;
+		    end if;
 		end if;
 	end process;
 	ready	<=	rst_done;
