@@ -34,7 +34,7 @@ architecture behavior of bht_info is
 	-- Array with: valid bit
 	type bht_v_type is ARRAY ((2**n_addr)-1 DOWNTO 0) of std_logic;
 	-- signal bht_v : bht_v_type := (others => '0');
-	signal	bht_v	:	bht_v_type := (others => '0');	-- put to '0' to test the BHT Valid bit reset process
+	signal	bht_v	:	bht_v_type; -- := (others => '0');	-- put to '0' to test the BHT Valid bit reset process
 														-- and also the signal 'rst_done'
 
 	-- input data/address
@@ -51,8 +51,9 @@ architecture behavior of bht_info is
 	signal rst_bht		:	std_logic;
 	signal rst_done		:	std_logic;
 	signal rst_index	:	std_logic_vector(n_addr-1 downto 0); -- := (others => '0');
-	constant last_index	:	std_logic_vector(n_addr-1 downto 0) := (others => '1');
-
+	constant last_index	:	std_logic_vector(n_addr-1 downto 0) := (others => '1'); 
+	signal last_rst : std_logic;
+	
 begin
 
 	d_out <= bht_v_out & bht_stag_out;
@@ -97,7 +98,7 @@ begin
 	process(clk)
 	begin
 		if (rising_edge(clk)) then
-		    if rst = '1' then
+		    if last_rst /= rst and rst = '1' then
 		        rst_fsm <= O_s;
 		        rst_done <= '0';
 		        rst_index <= (others => '0');
@@ -122,6 +123,7 @@ begin
 				    ---------------------
 			    end CASE;
 		    end if;
+		    last_rst <= rst;
 		end if;
 	end process;
 	ready	<=	rst_done;
