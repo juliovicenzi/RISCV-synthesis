@@ -18,7 +18,6 @@ entity stage1_IF is
 		flush_excp	: in std_logic;
 		m_tvec_base	: in std_logic_vector(n-1 downto 2);
 		stall_id_if	: in std_logic;
-		bht_ready	: out std_logic;
 		-- signals from stage MEM
 		mem2if		: in data_mem2if;
 		-- stage pipeline register, and currente pc/instr values
@@ -213,7 +212,6 @@ begin
 		taken		=> taken_t ,
 		miss_taken	=> miss_taken ,
 		miss_predict=> miss_predict ,
-		bht_ready	=> bht_ready,
 		--------------------------------
 		state_read	=> if_branch_stt,
 		state_write	=> mem2if.branch_stt,

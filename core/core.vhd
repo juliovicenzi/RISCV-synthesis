@@ -35,7 +35,6 @@ architecture behavior of core is
 	signal	rst_core	:	std_logic; -- := '0';
 	signal	flush_branch:	std_logic;	-- flush from branch/jump
 	signal	stall_id_if	:	std_logic;	-- stall from load-stall
-	signal	bht_ready	:	std_logic;
 
 	-- Exceptions signals/flags
 	signal	flush_excp	:	std_logic;						-- flush from exception/interrupt
@@ -179,7 +178,6 @@ begin
 		flush_excp		=> flush_excp,
 		m_tvec_base		=> m_tvec_base,
 		stall_id_if     => stall_id_if ,
-		bht_ready		=> bht_ready ,
 		----------------------------
 		mem2if			=> mem2if,
 		----------------------------

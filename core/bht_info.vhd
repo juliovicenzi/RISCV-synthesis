@@ -71,7 +71,7 @@ begin
 	begin
 		if rising_edge(clk) then
 			if rst = '1' then
-				bht_v <= (others => (others => '0'));
+				bht_v <= (others => '0');
 			else
 				if we = '1' then
 					bht_v(to_integer(unsigned(addr_v))) <= d_in_v;
