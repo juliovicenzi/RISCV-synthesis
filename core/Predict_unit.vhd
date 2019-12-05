@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use work.core_pkg.all;
 use ieee.numeric_std.all;
 
+--changes: bht_info reset is now synchronous with clock and takes 1 cycle
 entity Predict_unit is
 	port
 	(
@@ -16,7 +17,6 @@ entity Predict_unit is
 		taken		: out std_logic;	-- taken flag
 		miss_taken	: out std_logic;	-- miss check, it says if the 'miss_predict' was with taken = '1' OR  '0'
 		miss_predict: out std_logic;	-- miss predict flag, must result in a flush
-		bht_ready	: out std_logic;
 		-- predict unit address input/output
 		state_read	: out std_logic_vector(2 downto 0);
 		state_write	: in std_logic_vector(2 downto 0);
@@ -166,7 +166,6 @@ begin
 		clk 	=> clk ,
 		stall	=> stall ,
 		we 		=> we_info ,
-		ready	=> bht_ready,
 		-----------------------
 		w_addr 	=> index_write ,
 		r_addr  => index_read ,

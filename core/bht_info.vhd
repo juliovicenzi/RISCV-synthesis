@@ -2,6 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+-- changes: since BHT will be synthesized to an array of registers
+-- the valid bit reset information has been changed to a single rst signal
 entity bht_info is
 	generic( n_addr : integer ;
 			n_data  : integer);
@@ -11,7 +13,6 @@ entity bht_info is
 		rst		: in	std_logic;
 		stall	: in	std_logic;
 		we	 	: in 	std_logic;
-		ready	: out	std_logic;
 		----------------------------
 		r_addr	: in 	std_logic_vector(n_addr-1 downto 0);
 		w_addr	: in 	std_logic_vector(n_addr-1 downto 0);
@@ -33,9 +34,8 @@ architecture behavior of bht_info is
 	-----------------------------
 	-- Array with: valid bit
 	type bht_v_type is ARRAY ((2**n_addr)-1 DOWNTO 0) of std_logic;
-	-- signal bht_v : bht_v_type := (others => '0');
-	signal	bht_v	:	bht_v_type; -- := (others => '0');	-- put to '0' to test the BHT Valid bit reset process
-														-- and also the signal 'rst_done'
+
+	signal	bht_v	:	bht_v_type; 
 
 	-- input data/address
 	signal addr_v:	std_logic_vector(n_addr-1 downto 0);
@@ -43,16 +43,6 @@ architecture behavior of bht_info is
 
 	-- output register
 	signal bht_v_out : std_logic;
-
-	-----------------------------
-	-- FSM to reset the bht valid bit
-	type state_fsm is (O_s , RST_s);
-	signal rst_fsm		:	state_fsm; -- := O_s;
-	signal rst_bht		:	std_logic;
-	signal rst_done		:	std_logic;
-	signal rst_index	:	std_logic_vector(n_addr-1 downto 0); -- := (others => '0');
-	constant last_index	:	std_logic_vector(n_addr-1 downto 0) := (others => '1'); 
-	signal last_rst : std_logic;
 	
 begin
 
@@ -74,60 +64,25 @@ begin
 	end process;
 
 	----- valid bit
-	addr_v	<=	w_addr			when (rst_bht = '0') else
-				rst_index;
-	d_in_v	<=	d_in(n_data-1)	when (rst_bht = '0') else
-				'0';
+	addr_v	<=	w_addr;
+	d_in_v	<=	d_in(n_data-1);
 
 	process (clk)
 	begin
-		if (rising_edge(clk)) then
-			if (we = '1' OR rst_bht = '1') then
-				bht_v(to_integer(unsigned(addr_v))) <= d_in_v;
-			end if;
+		if rising_edge(clk) then
+			if rst = '1' then
+				bht_v <= (others => (others => '0'));
+			else
+				if we = '1' then
+					bht_v(to_integer(unsigned(addr_v))) <= d_in_v;
+				end if;
 
-			if (stall = '0') then
-				bht_v_out <= bht_v(to_integer(unsigned(r_addr)));
+				if stall = '0' then
+					bht_v_out <= bht_v(to_integer(unsigned(r_addr)));
 
+				end if;
 			end if;
 		end if;
 	end process;
-
-	---------------------------------------------
-	---- Reset BHT
-	process(clk)
-	begin
-		if (rising_edge(clk)) then
-		    if last_rst /= rst and rst = '1' then
-		        rst_fsm <= O_s;
-		        rst_done <= '0';
-		        rst_index <= (others => '0');
-		    else
-			    CASE rst_fsm is
-				    ---------------------
-				    when O_s =>
-					    if (rst_done = '0') then
-						    rst_fsm	<= RST_s;
-					    elsif (rst_done = '1') then
-						    rst_fsm	<= O_s;
-					    end if;
-				    ---------------------
-				    when RST_s =>
-					    if (rst_index = last_index) then
-						    rst_done	<= '1';
-						    rst_index	<= (others => '0');
-						    rst_fsm		<= O_s;
-					    else
-						    rst_index	<= std_logic_vector(unsigned(rst_index) + 1);
-					    end if;
-				    ---------------------
-			    end CASE;
-		    end if;
-		    last_rst <= rst;
-		end if;
-	end process;
-	ready	<=	rst_done;
-	rst_bht	<=	'1' when	(rst_fsm = RST_s) else
-				'0';
 
 end architecture behavior;

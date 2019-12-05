@@ -373,7 +373,6 @@ package core_pkg is
 			taken		: out std_logic;
 			miss_taken	: out std_logic;
 			miss_predict: out std_logic;
-			bht_ready	: out std_logic;
 			-- predict unit address input/output
 			state_read	: out std_logic_vector(2 downto 0);
 			state_write	: in std_logic_vector(2 downto 0);
@@ -393,7 +392,6 @@ package core_pkg is
 			clk 	: in std_logic;
 			stall	: in std_logic;
 			we	 	: in std_logic;
-			ready	: out std_logic;
 			-------------------------
             r_addr	: in std_logic_vector(n_addr-1 downto 0);
             w_addr	: in std_logic_vector(n_addr-1 downto 0);

@@ -81,17 +81,8 @@ begin
 --------------------------
 -- Core Reset Logic
 --------------------------
--- wait for the BHT to be invalid before start running
-	process(clk)
-	begin
-		if (rising_edge(clk)) then
-			if (rst = '1') then
-				rst_core <= '1';
-			elsif (rst_core = '1' AND bht_ready = '1') then
-				rst_core <= '0';
-			end if;
-		end if;
-	end process;
+-- BHT now resets in a single cycle, core rst is the same as rst
+	rst_core <= rst;
 
 --------------------------
 -- Core inputs/outputs
